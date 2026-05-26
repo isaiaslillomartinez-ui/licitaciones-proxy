@@ -15,13 +15,14 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/licitaciones", async (req, res) => {
   try {
-    const nombre = req.query.nombre || "electricidad";
+    const busqueda = req.query.nombre || "electricidad";
     const estado = req.query.estado || "vigente";
     const cantidad = req.query.cantidad || 10;
     const inicio = req.query.inicio || 0;
 
-    const url = `${BASE_URL}?nombre=${encodeURIComponent(nombre)}&estado=${estado}&cantidad=${cantidad}&inicio=${inicio}&ticket=${TICKET}`;
-    console.log(`[${new Date().toISOString()}] Consultando: ${nombre} | inicio:${inicio}`);
+    // La API usa "keywords" no "nombre"
+    const url = `${BASE_URL}?keywords=${encodeURIComponent(busqueda)}&estado=${estado}&cantidad=${cantidad}&inicio=${inicio}&ticket=${TICKET}`;
+    console.log(`[${new Date().toISOString()}] Consultando: ${busqueda} | url: ${url}`);
 
     const response = await fetch(url, {
       headers: { "Accept": "application/json", "User-Agent": "Mozilla/5.0" }
@@ -53,7 +54,7 @@ app.get("/licitacion/:codigo", async (req, res) => {
 });
 
 app.get("/api/status", (req, res) => {
-  res.json({ status: "ok", version: "2.2.0", timestamp: new Date().toISOString() });
+  res.json({ status: "ok", version: "2.3.0", timestamp: new Date().toISOString() });
 });
 
 app.listen(PORT, () => console.log(`🔌 Servidor activo en puerto ${PORT}`));
