@@ -1,1 +1,439 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚡ Licitaciones Eléctricas Chile</title>
+<style>
+  :root {
+    --blue: #185FA5; --blue-light: #E6F1FB; --blue-mid: #B5D4F4; --blue-dark: #0C447C;
+    --green: #3B6D11; --green-light: #EAF3DE; --green-mid: #C0DD97;
+    --amber: #633806; --amber-light: #FAEEDA; --amber-mid: #FAC775;
+    --red: #791F1F; --red-light: #FCEBEB; --red-mid: #F7C1C1;
+    --gray: #f5f5f0; --gray2: #e8e8e4; --gray3: #999; --text: #1a1a1a; --text2: #555;
+    --radius: 10px; --radius-sm: 6px;
+    --shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--gray); color: var(--text); min-height: 100vh; }
+
+  /* ── Header ── */
+  .topbar { background: var(--blue); color: white; padding: 14px 24px; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow); position: sticky; top: 0; z-index: 100; }
+  .topbar h1 { font-size: 17px; font-weight: 600; flex: 1; }
+  .topbar .sub { font-size: 11px; opacity: 0.75; }
+  .status-pill { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.15); border-radius: 20px; padding: 5px 12px; font-size: 12px; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: #a6e3a1; animation: pulse 1.5s infinite; }
+  .dot.err { background: #f38ba8; animation: none; }
+  .dot.chk { background: #89b4fa; animation: pulse 0.8s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
+
+  /* ── Layout ── */
+  .layout { display: flex; min-height: calc(100vh - 52px); }
+  .sidebar { width: 240px; background: white; border-right: 1px solid var(--gray2); padding: 20px 16px; flex-shrink: 0; position: sticky; top: 52px; height: calc(100vh - 52px); overflow-y: auto; }
+  .main { flex: 1; padding: 20px 24px; min-width: 0; }
+
+  /* ── Sidebar ── */
+  .sidebar h3 { font-size: 11px; font-weight: 600; color: var(--gray3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; margin-top: 20px; }
+  .sidebar h3:first-child { margin-top: 0; }
+  .filter-btn { width: 100%; text-align: left; padding: 8px 12px; border-radius: var(--radius-sm); border: none; background: transparent; font-size: 13px; color: var(--text2); cursor: pointer; display: flex; align-items: center; gap: 8px; margin-bottom: 2px; transition: background 0.15s; }
+  .filter-btn:hover { background: var(--gray); }
+  .filter-btn.active { background: var(--blue-light); color: var(--blue-dark); font-weight: 500; }
+  .filter-btn .count { margin-left: auto; background: var(--gray2); border-radius: 20px; padding: 1px 7px; font-size: 11px; }
+  .filter-btn.active .count { background: var(--blue-mid); color: var(--blue-dark); }
+
+  .stat-mini { background: var(--gray); border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 8px; }
+  .stat-mini .lbl { font-size: 11px; color: var(--gray3); }
+  .stat-mini .val { font-size: 20px; font-weight: 600; color: var(--text); }
+  .stat-mini.red .val { color: #E24B4A; }
+  .stat-mini.blue .val { color: var(--blue); }
+
+  /* ── Search ── */
+  .search-bar { display: flex; gap: 8px; margin-bottom: 16px; }
+  .search-bar input { flex: 1; padding: 10px 14px; border: 1px solid var(--gray2); border-radius: var(--radius); font-size: 14px; outline: none; transition: border 0.15s; }
+  .search-bar input:focus { border-color: var(--blue); }
+  .search-bar button { padding: 10px 20px; background: var(--blue); color: white; border: none; border-radius: var(--radius); font-size: 14px; cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 6px; }
+  .search-bar button:hover { background: var(--blue-dark); }
+  .search-bar button:active { transform: scale(0.98); }
+
+  /* ── Toolbar ── */
+  .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+  .toolbar-left { font-size: 13px; color: var(--text2); }
+  .toolbar-right { display: flex; gap: 8px; align-items: center; }
+  select { padding: 6px 10px; border: 1px solid var(--gray2); border-radius: var(--radius-sm); font-size: 13px; background: white; cursor: pointer; }
+
+  /* ── Alertas ── */
+  .alerta { background: var(--red-light); border-left: 3px solid #E24B4A; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 10px 14px; margin-bottom: 8px; font-size: 13px; color: var(--red); display: flex; align-items: flex-start; gap: 8px; animation: slideIn 0.3s ease; }
+  .alerta button { margin-left: auto; background: none; border: none; color: var(--red); cursor: pointer; font-size: 16px; line-height: 1; flex-shrink: 0; }
+  @keyframes slideIn { from { opacity:0; transform: translateX(-8px); } to { opacity:1; transform: translateX(0); } }
+
+  /* ── Cards ── */
+  .card { background: white; border: 1px solid var(--gray2); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px; transition: box-shadow 0.15s, border-color 0.15s; }
+  .card:hover { box-shadow: var(--shadow); border-color: var(--blue-mid); }
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+  .card-title { font-size: 14px; font-weight: 500; line-height: 1.45; flex: 1; color: var(--text); }
+  .badge { font-size: 11px; padding: 3px 8px; border-radius: 20px; font-weight: 500; flex-shrink: 0; }
+  .badge-inst { background: var(--blue-light); color: var(--blue-dark); }
+  .badge-mant { background: var(--green-light); color: var(--green); }
+  .badge-mat { background: var(--amber-light); color: var(--amber); }
+  .card-meta { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--text2); margin-bottom: 10px; }
+  .card-meta span { display: flex; align-items: center; gap: 4px; }
+  .card-footer { display: flex; justify-content: space-between; align-items: center; }
+  .monto { font-size: 14px; font-weight: 600; color: var(--blue); }
+  .dias-badge { font-size: 12px; padding: 3px 9px; border-radius: 20px; font-weight: 500; }
+  .dias-ok { background: var(--green-light); color: var(--green); }
+  .dias-warn { background: var(--amber-light); color: var(--amber); }
+  .dias-urg { background: var(--red-light); color: var(--red); }
+  .btn-ver { font-size: 12px; padding: 6px 12px; background: white; border: 1px solid var(--blue-mid); border-radius: var(--radius-sm); color: var(--blue); text-decoration: none; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; transition: background 0.15s; }
+  .btn-ver:hover { background: var(--blue-light); }
+
+  /* ── Estados ── */
+  .loading { text-align: center; padding: 3rem; color: var(--text2); }
+  .spinner { display: inline-block; width: 28px; height: 28px; border: 3px solid var(--gray2); border-top-color: var(--blue); border-radius: 50%; animation: spin 0.7s linear infinite; margin-bottom: 12px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .empty { text-align: center; padding: 3rem; color: var(--text2); }
+  .error-box { background: var(--red-light); border: 1px solid var(--red-mid); border-radius: var(--radius); padding: 16px 20px; color: var(--red); font-size: 13px; line-height: 1.6; margin-bottom: 16px; }
+
+  /* ── Paginación ── */
+  .pag { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 20px; padding-bottom: 20px; }
+  .pag button { padding: 7px 16px; border: 1px solid var(--gray2); border-radius: var(--radius-sm); background: white; cursor: pointer; font-size: 13px; }
+  .pag button:hover:not(:disabled) { background: var(--blue-light); border-color: var(--blue-mid); color: var(--blue); }
+  .pag button:disabled { opacity: 0.35; cursor: not-allowed; }
+  .pag span { font-size: 13px; color: var(--text2); }
+
+  /* ── Responsive ── */
+  @media (max-width: 700px) {
+    .sidebar { display: none; }
+    .main { padding: 14px; }
+    .topbar h1 { font-size: 15px; }
+  }
+
+  /* ── Icono SVG inline ── */
+  .ico { width: 14px; height: 14px; vertical-align: -2px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <div style="font-size:20px;font-weight:700;letter-spacing:-0.5px">⚡ Licitaciones Eléctricas</div>
+    <div class="sub">Chile · Mercado Público en tiempo real</div>
+  </div>
+  <div class="status-pill">
+    <div class="dot chk" id="statusDot"></div>
+    <span id="statusTxt">Conectando...</span>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- Sidebar filtros -->
+  <aside class="sidebar">
+    <h3>Categoría</h3>
+    <button class="filter-btn active" data-k="electricidad" onclick="clickFiltro(this)">
+      ⚡ Todas eléctricas <span class="count" id="cnt-todas">—</span>
+    </button>
+    <button class="filter-btn" data-k="instalación eléctrica" onclick="clickFiltro(this)">
+      🔌 Instalación <span class="count" id="cnt-inst">—</span>
+    </button>
+    <button class="filter-btn" data-k="mantención eléctrica" onclick="clickFiltro(this)">
+      🔧 Mantención <span class="count" id="cnt-mant">—</span>
+    </button>
+    <button class="filter-btn" data-k="materiales eléctricos" onclick="clickFiltro(this)">
+      📦 Materiales <span class="count" id="cnt-mat">—</span>
+    </button>
+    <button class="filter-btn" data-k="alumbrado público" onclick="clickFiltro(this)">
+      💡 Alumbrado <span class="count" id="cnt-alum">—</span>
+    </button>
+    <button class="filter-btn" data-k="tablero eléctrico" onclick="clickFiltro(this)">
+      🗂 Tableros <span class="count" id="cnt-tab">—</span>
+    </button>
+    <button class="filter-btn" data-k="cable conductor" onclick="clickFiltro(this)">
+      〰️ Cables <span class="count" id="cnt-cab">—</span>
+    </button>
+    <button class="filter-btn" data-k="grupo electrógeno" onclick="clickFiltro(this)">
+      🔋 Generadores <span class="count" id="cnt-gen">—</span>
+    </button>
+
+    <h3>Resumen</h3>
+    <div class="stat-mini red">
+      <div class="lbl">Urgentes (&lt;5 días)</div>
+      <div class="val" id="st-urg">—</div>
+    </div>
+    <div class="stat-mini blue">
+      <div class="lbl">Total encontradas</div>
+      <div class="val" id="st-total">—</div>
+    </div>
+    <div class="stat-mini">
+      <div class="lbl">Última actualización</div>
+      <div class="val" style="font-size:14px" id="st-hora">—</div>
+    </div>
+
+    <h3>Accesos directos</h3>
+    <a href="https://www.mercadopublico.cl" target="_blank" style="display:block;font-size:12px;color:var(--blue);padding:6px 0;text-decoration:none">↗ Mercado Público</a>
+    <a href="https://www.chileatiende.gob.cl/fichas/1273-registro-de-proveedores" target="_blank" style="display:block;font-size:12px;color:var(--blue);padding:6px 0;text-decoration:none">↗ Registro de Proveedores</a>
+    <a href="https://api.mercadopublico.cl" target="_blank" style="display:block;font-size:12px;color:var(--blue);padding:6px 0;text-decoration:none">↗ API Mercado Público</a>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+
+    <div class="search-bar">
+      <input type="text" id="q" placeholder="Buscar licitación... ej: tablero BT, empalme, alumbrado LED, subestación AT" />
+      <button onclick="buscar(1)">
+        <svg class="ico" style="width:16px;height:16px" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        Buscar
+      </button>
+    </div>
+
+    <div id="alertasBox"></div>
+
+    <div class="toolbar">
+      <span class="toolbar-left" id="toolbarLbl">Cargando...</span>
+      <div class="toolbar-right">
+        <select id="sortSel" onchange="renderCards()">
+          <option value="cierre">Urgencia (cierre próximo)</option>
+          <option value="fecha">Más recientes</option>
+          <option value="nombre">Nombre A-Z</option>
+          <option value="monto">Mayor monto</option>
+        </select>
+        <button onclick="buscar(currentPage)" style="padding:6px 12px;border:1px solid var(--gray2);border-radius:6px;background:white;cursor:pointer;font-size:13px">↺ Actualizar</button>
+      </div>
+    </div>
+
+    <div id="mainContent">
+      <div class="loading"><div class="spinner"></div><br>Conectando con Mercado Público...</div>
+    </div>
+
+    <div class="pag" id="pagBar" style="display:none">
+      <button id="btnPrev" onclick="cambiarPag(-1)">← Anterior</button>
+      <span id="pagInfo"></span>
+      <button id="btnNext" onclick="cambiarPag(1)">Siguiente →</button>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  // ── Configuración ────────────────────────────────────────────────────────
+  // Si abres este archivo directamente (Opción A), usa tu URL de Render:
+  const PROXY_URL = window.location.hostname === "localhost" || window.location.hostname === ""
+    ? "https://licitaciones-proxy.onrender.com"   // ← abre local, llama tu Render
+    : "";                                           // ← está en Render, llama relativo
+
+  const PER_PAGE = 10;
+
+  // ── Estado ───────────────────────────────────────────────────────────────
+  let results = [];
+  let currentPage = 1;
+  let totalPages = 1;
+  let totalCount = 0;
+  let currentKeyword = "electricidad";
+  let alertasVistas = new Set();
+
+  // ── Utilidades ───────────────────────────────────────────────────────────
+  function hora() {
+    return new Date().toLocaleTimeString("es-CL", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+  }
+  function diasRestantes(fechaCierre) {
+    if (!fechaCierre) return null;
+    return Math.ceil((new Date(fechaCierre) - Date.now()) / 86400000);
+  }
+  function setStatus(tipo, msg) {
+    const dot = document.getElementById("statusDot");
+    const txt = document.getElementById("statusTxt");
+    dot.className = "dot" + (tipo === "ok" ? "" : tipo === "err" ? " err" : " chk");
+    txt.textContent = msg;
+  }
+  function fmt(n) { return parseInt(n).toLocaleString("es-CL"); }
+
+  // ── Buscar ───────────────────────────────────────────────────────────────
+  async function buscar(page) {
+    page = page || 1;
+    currentPage = page;
+    const qVal = document.getElementById("q").value.trim();
+    const keyword = qVal || currentKeyword;
+    currentKeyword = keyword;
+
+    setStatus("chk", "Consultando...");
+    document.getElementById("mainContent").innerHTML = '<div class="loading"><div class="spinner"></div><br>Buscando "' + keyword + '" en Mercado Público...</div>';
+    document.getElementById("pagBar").style.display = "none";
+    document.getElementById("toolbarLbl").textContent = "Buscando...";
+
+    const offset = (page - 1) * PER_PAGE;
+    const url = `${PROXY_URL}/licitaciones?nombre=${encodeURIComponent(keyword)}&estado=vigente&cantidad=${PER_PAGE}&inicio=${offset}`;
+
+    try {
+      const resp = await fetch(url);
+      if (!resp.ok) throw new Error("HTTP " + resp.status);
+      const data = await resp.json();
+
+      if (!data || !data.Listado || data.Listado.length === 0) {
+        setStatus("ok", "Conectado · " + hora());
+        document.getElementById("mainContent").innerHTML = '<div class="empty">🔍 Sin resultados para "' + keyword + '".<br><small>Intenta con otra búsqueda.</small></div>';
+        document.getElementById("toolbarLbl").textContent = "0 resultados";
+        document.getElementById("st-total").textContent = "0";
+        document.getElementById("st-urg").textContent = "0";
+        return;
+      }
+
+      results = data.Listado;
+      totalCount = data.Cantidad || results.length;
+      totalPages = Math.max(1, Math.ceil(totalCount / PER_PAGE));
+
+      const urgentes = results.filter(r => { const d = diasRestantes(r.FechaCierre); return d !== null && d >= 0 && d <= 5; });
+
+      document.getElementById("st-total").textContent = fmt(totalCount);
+      document.getElementById("st-urg").textContent = urgentes.length;
+      document.getElementById("st-hora").textContent = hora();
+
+      setStatus("ok", "✅ En vivo · " + fmt(totalCount) + " licitaciones · " + hora());
+
+      mostrarAlertas(urgentes);
+      renderCards();
+
+      if (totalPages > 1) {
+        document.getElementById("pagBar").style.display = "flex";
+        document.getElementById("pagInfo").textContent = "Página " + page + " de " + totalPages;
+        document.getElementById("btnPrev").disabled = page <= 1;
+        document.getElementById("btnNext").disabled = page >= totalPages;
+      }
+
+      // Actualizar contadores del sidebar (async, no bloquea)
+      actualizarContadores();
+
+    } catch (e) {
+      setStatus("err", "Sin conexión");
+      document.getElementById("mainContent").innerHTML = `
+        <div class="error-box">
+          <strong>⚠️ No se pudo conectar al servidor proxy</strong><br><br>
+          Si el servidor está en plan gratuito de Render, puede estar "durmiendo".<br>
+          <strong>Espera 30 segundos</strong> y presiona Actualizar.<br><br>
+          Error: ${e.message}<br><br>
+          <a href="https://dashboard.render.com" target="_blank" style="color:var(--red);font-weight:500">→ Verificar estado en Render Dashboard</a>
+        </div>`;
+      document.getElementById("toolbarLbl").textContent = "Error de conexión";
+    }
+  }
+
+  // ── Alertas urgentes ─────────────────────────────────────────────────────
+  function mostrarAlertas(urgentes) {
+    const box = document.getElementById("alertasBox");
+    const nuevas = urgentes.filter(u => !alertasVistas.has(u.CodigoExterno));
+    if (!nuevas.length) return;
+    nuevas.forEach(u => alertasVistas.add(u.CodigoExterno));
+    box.innerHTML = nuevas.slice(0, 5).map(u => {
+      const d = diasRestantes(u.FechaCierre);
+      const txt = d === 0 ? "¡Cierra HOY!" : d === 1 ? "¡Cierra mañana!" : "Cierra en " + d + " días";
+      return `<div class="alerta">
+        🔔 <div><strong>${txt}</strong> — ${u.Nombre || u.CodigoExterno}<br>
+        <small>${u.NombreOrganismo || ""} · Código: ${u.CodigoExterno || "—"}</small></div>
+        <button onclick="this.parentElement.remove()">×</button>
+      </div>`;
+    }).join("");
+  }
+
+  // ── Render tarjetas ──────────────────────────────────────────────────────
+  function renderCards() {
+    const sort = document.getElementById("sortSel").value;
+    let data = [...results];
+    if (sort === "cierre") data.sort((a,b) => new Date(a.FechaCierre||"9999") - new Date(b.FechaCierre||"9999"));
+    else if (sort === "fecha") data.sort((a,b) => new Date(b.FechaPublicacion||0) - new Date(a.FechaPublicacion||0));
+    else if (sort === "nombre") data.sort((a,b) => (a.Nombre||"").localeCompare(b.Nombre||"","es"));
+    else if (sort === "monto") data.sort((a,b) => (parseInt(b.Monto)||0) - (parseInt(a.Monto)||0));
+
+    document.getElementById("toolbarLbl").textContent = fmt(totalCount) + " licitaciones encontradas · página " + currentPage + " de " + totalPages;
+
+    document.getElementById("mainContent").innerHTML = data.map(d => {
+      const nombre = d.Nombre || d.CodigoExterno || "Sin nombre";
+      const organismo = d.NombreOrganismo || "—";
+      const codigo = d.CodigoExterno || "";
+      const pub = d.FechaPublicacion ? d.FechaPublicacion.substring(0,10) : "—";
+      const cierre = d.FechaCierre ? d.FechaCierre.substring(0,10) : "—";
+      const dias = diasRestantes(d.FechaCierre);
+      const monto = d.Monto ? "$ " + fmt(d.Monto) : "Consultar bases";
+
+      let diasTxt = "—", diasCls = "dias-ok";
+      if (dias !== null) {
+        if (dias < 0) { diasTxt = "Cerrada"; diasCls = "dias-urg"; }
+        else if (dias === 0) { diasTxt = "¡Hoy!"; diasCls = "dias-urg"; }
+        else if (dias === 1) { diasTxt = "¡Mañana!"; diasCls = "dias-urg"; }
+        else if (dias <= 3) { diasTxt = dias + " días"; diasCls = "dias-urg"; }
+        else if (dias <= 7) { diasTxt = dias + " días"; diasCls = "dias-warn"; }
+        else { diasTxt = dias + " días"; diasCls = "dias-ok"; }
+      }
+
+      const nomLow = nombre.toLowerCase();
+      let badgeTxt = "Eléctrica", badgeCls = "badge-inst";
+      if (nomLow.includes("mantenci") || nomLow.includes("mantenimiento")) { badgeTxt = "Mantención"; badgeCls = "badge-mant"; }
+      else if (nomLow.includes("material") || nomLow.includes("suministro") || nomLow.includes("cable") || nomLow.includes("conductor") || nomLow.includes("tablero")) { badgeTxt = "Materiales"; badgeCls = "badge-mat"; }
+      else if (nomLow.includes("instalaci")) { badgeTxt = "Instalación"; badgeCls = "badge-inst"; }
+
+      const url = codigo
+        ? `https://www.mercadopublico.cl/Procurement/Modules/RFB/DetailsBases.aspx?qs=${codigo}`
+        : "https://www.mercadopublico.cl";
+
+      return `<div class="card">
+        <div class="card-top">
+          <span class="card-title">${nombre}</span>
+          <span class="badge ${badgeCls}">${badgeTxt}</span>
+        </div>
+        <div class="card-meta">
+          <span>🏛 ${organismo}</span>
+          ${codigo ? `<span># ${codigo}</span>` : ""}
+          <span>📅 Pub. ${pub}</span>
+          <span>🗓 Cierre ${cierre}</span>
+        </div>
+        <div class="card-footer">
+          <span class="monto">${monto}</span>
+          <div style="display:flex;gap:8px;align-items:center">
+            <span class="dias-badge ${diasCls}">⏱ ${diasTxt}</span>
+            <a class="btn-ver" href="${url}" target="_blank">↗ Ver licitación</a>
+          </div>
+        </div>
+      </div>`;
+    }).join("");
+  }
+
+  // ── Contadores sidebar ───────────────────────────────────────────────────
+  async function actualizarContadores() {
+    const rubros = [
+      { id: "cnt-inst", k: "instalación eléctrica" },
+      { id: "cnt-mant", k: "mantención eléctrica" },
+      { id: "cnt-mat",  k: "materiales eléctricos" },
+      { id: "cnt-alum", k: "alumbrado público" },
+      { id: "cnt-tab",  k: "tablero eléctrico" },
+      { id: "cnt-cab",  k: "cable conductor" },
+      { id: "cnt-gen",  k: "grupo electrógeno" },
+    ];
+    for (const r of rubros) {
+      try {
+        const url = `${PROXY_URL}/licitaciones?nombre=${encodeURIComponent(r.k)}&estado=vigente&cantidad=1&inicio=0`;
+        const resp = await fetch(url);
+        const data = await resp.json();
+        const el = document.getElementById(r.id);
+        if (el) el.textContent = data.Cantidad || "0";
+      } catch(e) { /* silencioso */ }
+      await new Promise(r => setTimeout(r, 400)); // no saturar la API
+    }
+  }
+
+  // ── Eventos ──────────────────────────────────────────────────────────────
+  function clickFiltro(btn) {
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("q").value = "";
+    currentKeyword = btn.dataset.k;
+    buscar(1);
+  }
+  function cambiarPag(dir) { buscar(currentPage + dir); }
+  document.getElementById("q").addEventListener("keydown", e => { if (e.key === "Enter") buscar(1); });
+
+  // ── Arrancar ─────────────────────────────────────────────────────────────
+  buscar(1);
+
+  // Auto-refresh cada 5 minutos
+  setInterval(() => buscar(currentPage), 5 * 60 * 1000);
+</script>
+</body>
+</html>
 
