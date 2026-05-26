@@ -368,9 +368,10 @@
       else if (nomLow.includes("material") || nomLow.includes("suministro") || nomLow.includes("cable") || nomLow.includes("conductor") || nomLow.includes("tablero")) { badgeTxt = "Materiales"; badgeCls = "badge-mat"; }
       else if (nomLow.includes("instalaci")) { badgeTxt = "Instalación"; badgeCls = "badge-inst"; }
 
+      // URL correcta de Mercado Público 2025
       const url = codigo
-        ? `https://www.mercadopublico.cl/Procurement/Modules/RFB/DetailsBases.aspx?qs=${codigo}`
-        : "https://www.mercadopublico.cl";
+        ? `https://www.mercadopublico.cl/Procurement/Modules/RFB/ListaBases.aspx?CodigoLicitacion=${codigo}`
+        : "https://www.mercadopublico.cl/Procurement/Modules/RFB/ListaBases.aspx";
 
       return `<div class="card">
         <div class="card-top">
@@ -436,4 +437,3 @@
 </script>
 </body>
 </html>
-
