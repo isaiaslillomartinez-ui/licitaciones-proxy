@@ -646,10 +646,10 @@
         : `<span class="monto-consultar">Consultar bases</span>`;
       const tipoBadge = d.Tipo ? `<span class="tipo-badge">${d.Tipo}</span>` : "";
 
-      // URL correcta de Mercado Público 2025
+      // URL correcta: buscar por código en Mercado Público
       const url = codigo
-        ? `https://www.mercadopublico.cl/Procurement/Modules/RFB/ListaBases.aspx?CodigoLicitacion=${codigo}`
-        : "https://www.mercadopublico.cl/Procurement/Modules/RFB/ListaBases.aspx";
+        ? `https://www.mercadopublico.cl/Procurement/Modules/RFB/ListaBases.aspx?NameBuyer=&RutBuyer=&RutSeller=&ID=${encodeURIComponent(codigo)}&ItemsPerPage=20`
+        : "https://www.mercadopublico.cl";
 
       return `<div class="card">
         <div class="card-top">
