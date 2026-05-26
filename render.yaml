@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: licitaciones-electricas-proxy
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: MP_TICKET
+        value: 5B8F0534-DFDA-4B62-BC15-6B6D55E8A6A3
+      - key: PORT
+        value: 3000
