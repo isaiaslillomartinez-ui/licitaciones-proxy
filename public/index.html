@@ -47,6 +47,40 @@
   .stat-mini.red .val { color: #E24B4A; }
   .stat-mini.blue .val { color: var(--blue); }
 
+  /* ── Stats panel ── */
+  .stats-panel { background: white; border: 1px solid var(--gray2); border-radius: var(--radius); padding: 16px 20px; margin-bottom: 16px; }
+  .stats-panel h2 { font-size: 13px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 16px; }
+  .stat-card { background: var(--gray); border-radius: var(--radius-sm); padding: 12px 14px; }
+  .stat-card .sc-lbl { font-size: 11px; color: var(--gray3); margin-bottom: 4px; }
+  .stat-card .sc-val { font-size: 22px; font-weight: 700; color: var(--text); }
+  .stat-card .sc-sub { font-size: 11px; color: var(--gray3); margin-top: 2px; }
+  .stat-card.blue { background: var(--blue-light); }
+  .stat-card.blue .sc-val { color: var(--blue); }
+  .stat-card.red { background: var(--red-light); }
+  .stat-card.red .sc-val { color: #E24B4A; }
+  .stat-card.green { background: var(--green-light); }
+  .stat-card.green .sc-val { color: var(--green); }
+  .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .chart-box { background: var(--gray); border-radius: var(--radius-sm); padding: 14px; }
+  .chart-box h3 { font-size: 12px; font-weight: 600; color: var(--text2); margin-bottom: 12px; }
+  .bar-item { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .bar-label { font-size: 12px; color: var(--text2); width: 90px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bar-track { flex: 1; background: var(--gray2); border-radius: 20px; height: 8px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 20px; background: var(--blue); transition: width 0.6s ease; }
+  .bar-fill.green { background: #639922; }
+  .bar-fill.amber { background: #F59E0B; }
+  .bar-fill.red { background: #E24B4A; }
+  .bar-count { font-size: 11px; color: var(--gray3); width: 24px; text-align: right; flex-shrink: 0; }
+  .pie-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .pie-legend { display: flex; flex-direction: column; gap: 6px; }
+  .pie-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text2); }
+  .pie-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  /* ── Monto en tarjeta ── */
+  .monto-grande { font-size: 15px; font-weight: 700; color: var(--blue); }
+  .monto-consultar { font-size: 12px; color: var(--gray3); font-style: italic; }
+  .tipo-badge { font-size: 10px; padding: 2px 6px; border-radius: 4px; background: var(--gray2); color: var(--text2); font-weight: 600; margin-left: 4px; vertical-align: middle; }
+
   /* ── Search ── */
   .search-bar { display: flex; gap: 8px; margin-bottom: 16px; }
   .search-bar input { flex: 1; padding: 10px 14px; border: 1px solid var(--gray2); border-radius: var(--radius); font-size: 14px; outline: none; transition: border 0.15s; }
@@ -154,55 +188,86 @@
       🔋 Generadores <span class="count" id="cnt-gen">—</span>
     </button>
 
-    <h3>Región / Ciudad</h3>
-    <button class="filter-btn active" data-region="" onclick="clickRegion(this)">
-      🇨🇱 Todas las regiones
-    </button>
-    <button class="filter-btn" data-region="Valparaíso" onclick="clickRegion(this)">
-      📍 Valparaíso
-    </button>
-    <button class="filter-btn" data-region="Metropolitana" onclick="clickRegion(this)">
-      📍 Metropolitana
-    </button>
-    <button class="filter-btn" data-region="Biobío" onclick="clickRegion(this)">
-      📍 Biobío
-    </button>
-    <button class="filter-btn" data-region="Araucanía" onclick="clickRegion(this)">
-      📍 Araucanía
-    </button>
-    <button class="filter-btn" data-region="O'Higgins" onclick="clickRegion(this)">
-      📍 O'Higgins
-    </button>
-    <button class="filter-btn" data-region="Maule" onclick="clickRegion(this)">
-      📍 Maule
-    </button>
-    <button class="filter-btn" data-region="Los Lagos" onclick="clickRegion(this)">
-      📍 Los Lagos
-    </button>
-    <button class="filter-btn" data-region="Coquimbo" onclick="clickRegion(this)">
-      📍 Coquimbo
-    </button>
-    <button class="filter-btn" data-region="Antofagasta" onclick="clickRegion(this)">
-      📍 Antofagasta
-    </button>
-    <button class="filter-btn" data-region="Atacama" onclick="clickRegion(this)">
-      📍 Atacama
-    </button>
-    <button class="filter-btn" data-region="Tarapacá" onclick="clickRegion(this)">
-      📍 Tarapacá
-    </button>
-    <button class="filter-btn" data-region="Arica" onclick="clickRegion(this)">
-      📍 Arica y Parinacota
-    </button>
-    <button class="filter-btn" data-region="Los Ríos" onclick="clickRegion(this)">
-      📍 Los Ríos
-    </button>
-    <button class="filter-btn" data-region="Aysén" onclick="clickRegion(this)">
-      📍 Aysén
-    </button>
-    <button class="filter-btn" data-region="Magallanes" onclick="clickRegion(this)">
-      📍 Magallanes
-    </button>
+    <h3 style="display:flex;align-items:center;justify-content:space-between">
+      Región / Ciudad
+      <button onclick="toggleRegionView()" id="btnRegionToggle" title="Cambiar vista" style="background:none;border:none;cursor:pointer;font-size:14px;color:var(--gray3);padding:0">⇄</button>
+    </h3>
+
+    <!-- Vista dropdown -->
+    <div id="regionDropdown" style="display:none;margin-bottom:8px">
+      <select id="regionSelect" onchange="clickRegionSelect(this)"
+        style="width:100%;padding:8px 10px;border:1px solid var(--gray2);border-radius:var(--radius-sm);font-size:13px;background:white;color:var(--text);cursor:pointer;appearance:auto">
+        <option value="">🇨🇱 Todas las regiones</option>
+        <option value="Valparaíso">📍 Valparaíso</option>
+        <option value="Metropolitana">📍 Metropolitana</option>
+        <option value="Biobío">📍 Biobío</option>
+        <option value="Araucanía">📍 Araucanía</option>
+        <option value="O'Higgins">📍 O'Higgins</option>
+        <option value="Maule">📍 Maule</option>
+        <option value="Los Lagos">📍 Los Lagos</option>
+        <option value="Coquimbo">📍 Coquimbo</option>
+        <option value="Antofagasta">📍 Antofagasta</option>
+        <option value="Atacama">📍 Atacama</option>
+        <option value="Tarapacá">📍 Tarapacá</option>
+        <option value="Arica">📍 Arica y Parinacota</option>
+        <option value="Los Ríos">📍 Los Ríos</option>
+        <option value="Aysén">📍 Aysén</option>
+        <option value="Magallanes">📍 Magallanes</option>
+      </select>
+      <div id="regionDropdownLabel" style="margin-top:6px;font-size:11px;color:var(--gray3);padding:0 2px">Filtrando: todas las regiones</div>
+    </div>
+
+    <!-- Vista lista (botones) -->
+    <div id="regionLista">
+      <button class="filter-btn active" data-region="" onclick="clickRegion(this)">
+        🇨🇱 Todas las regiones
+      </button>
+      <button class="filter-btn" data-region="Valparaíso" onclick="clickRegion(this)">
+        📍 Valparaíso
+      </button>
+      <button class="filter-btn" data-region="Metropolitana" onclick="clickRegion(this)">
+        📍 Metropolitana
+      </button>
+      <button class="filter-btn" data-region="Biobío" onclick="clickRegion(this)">
+        📍 Biobío
+      </button>
+      <button class="filter-btn" data-region="Araucanía" onclick="clickRegion(this)">
+        📍 Araucanía
+      </button>
+      <button class="filter-btn" data-region="O'Higgins" onclick="clickRegion(this)">
+        📍 O'Higgins
+      </button>
+      <button class="filter-btn" data-region="Maule" onclick="clickRegion(this)">
+        📍 Maule
+      </button>
+      <button class="filter-btn" data-region="Los Lagos" onclick="clickRegion(this)">
+        📍 Los Lagos
+      </button>
+      <button class="filter-btn" data-region="Coquimbo" onclick="clickRegion(this)">
+        📍 Coquimbo
+      </button>
+      <button class="filter-btn" data-region="Antofagasta" onclick="clickRegion(this)">
+        📍 Antofagasta
+      </button>
+      <button class="filter-btn" data-region="Atacama" onclick="clickRegion(this)">
+        📍 Atacama
+      </button>
+      <button class="filter-btn" data-region="Tarapacá" onclick="clickRegion(this)">
+        📍 Tarapacá
+      </button>
+      <button class="filter-btn" data-region="Arica" onclick="clickRegion(this)">
+        📍 Arica y Parinacota
+      </button>
+      <button class="filter-btn" data-region="Los Ríos" onclick="clickRegion(this)">
+        📍 Los Ríos
+      </button>
+      <button class="filter-btn" data-region="Aysén" onclick="clickRegion(this)">
+        📍 Aysén
+      </button>
+      <button class="filter-btn" data-region="Magallanes" onclick="clickRegion(this)">
+        📍 Magallanes
+      </button>
+    </div>
 
     <h3>Resumen</h3>
     <div class="stat-mini red">
@@ -227,6 +292,43 @@
   <!-- Main -->
   <main class="main">
 
+    <!-- Panel de estadísticas -->
+    <div class="stats-panel" id="statsPanel" style="display:none">
+      <h2>📊 Resumen del día — <span id="statFecha">—</span></h2>
+      <div class="stats-grid">
+        <div class="stat-card blue">
+          <div class="sc-lbl">Total licitaciones</div>
+          <div class="sc-val" id="sc-total">—</div>
+          <div class="sc-sub">publicadas hoy</div>
+        </div>
+        <div class="stat-card red">
+          <div class="sc-lbl">Urgentes</div>
+          <div class="sc-val" id="sc-urg">—</div>
+          <div class="sc-sub">cierran en ≤5 días</div>
+        </div>
+        <div class="stat-card green">
+          <div class="sc-lbl">Monto total estimado</div>
+          <div class="sc-val" id="sc-monto">—</div>
+          <div class="sc-sub">en licitaciones con monto</div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-lbl">Promedio cierre</div>
+          <div class="sc-val" id="sc-prom">—</div>
+          <div class="sc-sub">días restantes promedio</div>
+        </div>
+      </div>
+      <div class="chart-row">
+        <div class="chart-box">
+          <h3>Por categoría</h3>
+          <div id="chartCat"></div>
+        </div>
+        <div class="chart-box">
+          <h3>Por urgencia</h3>
+          <div id="chartUrg"></div>
+        </div>
+      </div>
+    </div>
+
     <div class="search-bar">
       <input type="text" id="q" placeholder="Buscar licitación... ej: tablero BT, empalme, alumbrado LED, subestación AT" />
       <button onclick="buscar(1)">
@@ -246,6 +348,7 @@
           <option value="nombre">Nombre A-Z</option>
           <option value="monto">Mayor monto</option>
         </select>
+        <button onclick="toggleStats()" id="btnStats" style="padding:6px 12px;border:1px solid var(--gray2);border-radius:6px;background:white;cursor:pointer;font-size:13px">📊 Estadísticas</button>
         <button onclick="buscar(currentPage)" style="padding:6px 12px;border:1px solid var(--gray2);border-radius:6px;background:white;cursor:pointer;font-size:13px">↺ Actualizar</button>
       </div>
     </div>
@@ -384,10 +487,113 @@
   }
 
   // ── Render tarjetas ──────────────────────────────────────────────────────
+  function toggleStats() {
+    const panel = document.getElementById("statsPanel");
+    const btn = document.getElementById("btnStats");
+    const visible = panel.style.display !== "none";
+    panel.style.display = visible ? "none" : "block";
+    btn.style.background = visible ? "white" : "var(--blue-light)";
+    btn.style.borderColor = visible ? "var(--gray2)" : "var(--blue-mid)";
+    btn.style.color = visible ? "" : "var(--blue)";
+    if (!visible) updateStats();
+  }
+
+  function updateStats() {
+    const data = results;
+    if (!data.length) return;
+
+    // Fecha
+    document.getElementById("statFecha").textContent = new Date().toLocaleDateString("es-CL", { weekday:"long", day:"numeric", month:"long" });
+
+    // Contadores
+    const urgentes = data.filter(d => { const x = diasRestantes(d.FechaCierre); return x !== null && x >= 0 && x <= 5; });
+    document.getElementById("sc-total").textContent = data.length;
+    document.getElementById("sc-urg").textContent = urgentes.length;
+
+    // Monto total
+    const conMonto = data.filter(d => d.Monto && parseInt(d.Monto) > 0);
+    const totalMonto = conMonto.reduce((s, d) => s + parseInt(d.Monto), 0);
+    document.getElementById("sc-monto").textContent = totalMonto > 0
+      ? "$ " + (totalMonto / 1000000).toFixed(1) + "M"
+      : "—";
+
+    // Promedio días cierre
+    const diasArr = data.map(d => diasRestantes(d.FechaCierre)).filter(d => d !== null && d >= 0);
+    const prom = diasArr.length ? Math.round(diasArr.reduce((a,b) => a+b, 0) / diasArr.length) : 0;
+    document.getElementById("sc-prom").textContent = prom + "d";
+
+    // Gráfico por categoría
+    const cats = { "Instalación": 0, "Mantención": 0, "Materiales": 0, "Eléctrica": 0 };
+    data.forEach(d => {
+      const n = (d.Nombre || "").toLowerCase();
+      if (n.includes("instalaci")) cats["Instalación"]++;
+      else if (n.includes("mantenci") || n.includes("mantenimiento")) cats["Mantención"]++;
+      else if (n.includes("material") || n.includes("suministro") || n.includes("cable")) cats["Materiales"]++;
+      else cats["Eléctrica"]++;
+    });
+    const maxCat = Math.max(...Object.values(cats));
+    const coloresCat = ["blue", "green", "amber", ""];
+    document.getElementById("chartCat").innerHTML = Object.entries(cats).map(([k,v], i) => `
+      <div class="bar-item">
+        <span class="bar-label">${k}</span>
+        <div class="bar-track"><div class="bar-fill ${coloresCat[i]}" style="width:${maxCat ? (v/maxCat*100) : 0}%"></div></div>
+        <span class="bar-count">${v}</span>
+      </div>`).join("");
+
+    // Gráfico por urgencia
+    const urg = { "Hoy/Mañana": 0, "2-5 días": 0, "6-14 días": 0, "15+ días": 0 };
+    data.forEach(d => {
+      const x = diasRestantes(d.FechaCierre);
+      if (x === null || x < 0) return;
+      if (x <= 1) urg["Hoy/Mañana"]++;
+      else if (x <= 5) urg["2-5 días"]++;
+      else if (x <= 14) urg["6-14 días"]++;
+      else urg["15+ días"]++;
+    });
+    const maxUrg = Math.max(...Object.values(urg));
+    const coloresUrg = ["red", "amber", "blue", "green"];
+    document.getElementById("chartUrg").innerHTML = Object.entries(urg).map(([k,v], i) => `
+      <div class="bar-item">
+        <span class="bar-label">${k}</span>
+        <div class="bar-track"><div class="bar-fill ${coloresUrg[i]}" style="width:${maxUrg ? (v/maxUrg*100) : 0}%"></div></div>
+        <span class="bar-count">${v}</span>
+      </div>`).join("");
+  }
+
+  let regionViewMode = "lista"; // "lista" o "dropdown"
+
+  function toggleRegionView() {
+    regionViewMode = regionViewMode === "lista" ? "dropdown" : "lista";
+    document.getElementById("regionLista").style.display = regionViewMode === "lista" ? "block" : "none";
+    document.getElementById("regionDropdown").style.display = regionViewMode === "dropdown" ? "block" : "none";
+    document.getElementById("btnRegionToggle").title = regionViewMode === "lista" ? "Ver como lista desplegable" : "Ver como botones";
+    // Sincronizar valor
+    if (regionViewMode === "dropdown") {
+      document.getElementById("regionSelect").value = currentRegion;
+      actualizarLabelDropdown(currentRegion);
+    }
+  }
+
+  function clickRegionSelect(sel) {
+    currentRegion = sel.value;
+    actualizarLabelDropdown(currentRegion);
+    renderCards();
+  }
+
+  function actualizarLabelDropdown(region) {
+    const lbl = document.getElementById("regionDropdownLabel");
+    lbl.textContent = region ? "Filtrando: " + region : "Filtrando: todas las regiones";
+    lbl.style.color = region ? "var(--blue)" : "var(--gray3)";
+    lbl.style.fontWeight = region ? "500" : "normal";
+  }
+
   function clickRegion(btn) {
     document.querySelectorAll("[data-region]").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
     currentRegion = btn.dataset.region;
+    // Sincronizar dropdown
+    document.getElementById("regionSelect").value = currentRegion;
+    actualizarLabelDropdown(currentRegion);
     renderCards();
   }
 
@@ -435,6 +641,11 @@
       else if (nomLow.includes("material") || nomLow.includes("suministro") || nomLow.includes("cable") || nomLow.includes("conductor") || nomLow.includes("tablero")) { badgeTxt = "Materiales"; badgeCls = "badge-mat"; }
       else if (nomLow.includes("instalaci")) { badgeTxt = "Instalación"; badgeCls = "badge-inst"; }
 
+      const montoHTML = d.Monto && parseInt(d.Monto) > 0
+        ? `<span class="monto-grande">$ ${fmt(d.Monto)}</span>`
+        : `<span class="monto-consultar">Consultar bases</span>`;
+      const tipoBadge = d.Tipo ? `<span class="tipo-badge">${d.Tipo}</span>` : "";
+
       // URL correcta de Mercado Público 2025
       const url = codigo
         ? `https://www.mercadopublico.cl/Procurement/Modules/RFB/ListaBases.aspx?CodigoLicitacion=${codigo}`
@@ -442,7 +653,7 @@
 
       return `<div class="card">
         <div class="card-top">
-          <span class="card-title">${nombre}</span>
+          <span class="card-title">${nombre} ${tipoBadge}</span>
           <span class="badge ${badgeCls}">${badgeTxt}</span>
         </div>
         <div class="card-meta">
@@ -453,7 +664,10 @@
           <span>🗓 Cierre ${cierre}</span>
         </div>
         <div class="card-footer">
-          <span class="monto">${monto}</span>
+          <div style="display:flex;flex-direction:column;gap:2px">
+            ${montoHTML}
+            ${d.Monto && parseInt(d.Monto) > 0 ? `<span style="font-size:11px;color:var(--gray3)">Monto estimado</span>` : ""}
+          </div>
           <div style="display:flex;gap:8px;align-items:center">
             <span class="dias-badge ${diasCls}">⏱ ${diasTxt}</span>
             <a class="btn-ver" href="${url}" target="_blank">↗ Ver licitación</a>
