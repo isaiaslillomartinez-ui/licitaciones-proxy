@@ -154,6 +154,56 @@
       🔋 Generadores <span class="count" id="cnt-gen">—</span>
     </button>
 
+    <h3>Región / Ciudad</h3>
+    <button class="filter-btn active" data-region="" onclick="clickRegion(this)">
+      🇨🇱 Todas las regiones
+    </button>
+    <button class="filter-btn" data-region="Valparaíso" onclick="clickRegion(this)">
+      📍 Valparaíso
+    </button>
+    <button class="filter-btn" data-region="Metropolitana" onclick="clickRegion(this)">
+      📍 Metropolitana
+    </button>
+    <button class="filter-btn" data-region="Biobío" onclick="clickRegion(this)">
+      📍 Biobío
+    </button>
+    <button class="filter-btn" data-region="Araucanía" onclick="clickRegion(this)">
+      📍 Araucanía
+    </button>
+    <button class="filter-btn" data-region="O'Higgins" onclick="clickRegion(this)">
+      📍 O'Higgins
+    </button>
+    <button class="filter-btn" data-region="Maule" onclick="clickRegion(this)">
+      📍 Maule
+    </button>
+    <button class="filter-btn" data-region="Los Lagos" onclick="clickRegion(this)">
+      📍 Los Lagos
+    </button>
+    <button class="filter-btn" data-region="Coquimbo" onclick="clickRegion(this)">
+      📍 Coquimbo
+    </button>
+    <button class="filter-btn" data-region="Antofagasta" onclick="clickRegion(this)">
+      📍 Antofagasta
+    </button>
+    <button class="filter-btn" data-region="Atacama" onclick="clickRegion(this)">
+      📍 Atacama
+    </button>
+    <button class="filter-btn" data-region="Tarapacá" onclick="clickRegion(this)">
+      📍 Tarapacá
+    </button>
+    <button class="filter-btn" data-region="Arica" onclick="clickRegion(this)">
+      📍 Arica y Parinacota
+    </button>
+    <button class="filter-btn" data-region="Los Ríos" onclick="clickRegion(this)">
+      📍 Los Ríos
+    </button>
+    <button class="filter-btn" data-region="Aysén" onclick="clickRegion(this)">
+      📍 Aysén
+    </button>
+    <button class="filter-btn" data-region="Magallanes" onclick="clickRegion(this)">
+      📍 Magallanes
+    </button>
+
     <h3>Resumen</h3>
     <div class="stat-mini red">
       <div class="lbl">Urgentes (&lt;5 días)</div>
@@ -228,6 +278,7 @@
   let totalPages = 1;
   let totalCount = 0;
   let currentKeyword = "electricidad";
+  let currentRegion = "";
   let alertasVistas = new Set();
 
   // ── Utilidades ───────────────────────────────────────────────────────────
@@ -333,9 +384,25 @@
   }
 
   // ── Render tarjetas ──────────────────────────────────────────────────────
+  function clickRegion(btn) {
+    document.querySelectorAll("[data-region]").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentRegion = btn.dataset.region;
+    renderCards();
+  }
+
   function renderCards() {
     const sort = document.getElementById("sortSel").value;
     let data = [...results];
+
+    // Filtrar por región si hay una seleccionada
+    if (currentRegion) {
+      data = data.filter(d => {
+        const org = (d.NombreOrganismo || d.NombreUnidad || "").toLowerCase();
+        const region = currentRegion.toLowerCase();
+        return org.includes(region);
+      });
+    }
     if (sort === "cierre") data.sort((a,b) => new Date(a.FechaCierre||"9999") - new Date(b.FechaCierre||"9999"));
     else if (sort === "fecha") data.sort((a,b) => new Date(b.FechaPublicacion||0) - new Date(a.FechaPublicacion||0));
     else if (sort === "nombre") data.sort((a,b) => (a.Nombre||"").localeCompare(b.Nombre||"","es"));
@@ -381,6 +448,7 @@
         <div class="card-meta">
           <span>🏛 ${organismo}</span>
           ${codigo ? `<span># ${codigo}</span>` : ""}
+          ${d.NombreRegion ? `<span>📍 ${d.NombreRegion}</span>` : ""}
           <span>📅 Pub. ${pub}</span>
           <span>🗓 Cierre ${cierre}</span>
         </div>
